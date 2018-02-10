@@ -26,6 +26,7 @@ public class CannonController : MonoBehaviour {
     //int rInput = 0;
     int yRotationFixValue;
     //bool fire;
+    public bool HasShooted { get; set; }
 
     private void Awake()
     {
@@ -42,7 +43,7 @@ public class CannonController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (!GameManager.Instance.IsTurnOf(this)) return;
+        if (!GameManager.Instance.IsTurnOf(this) || HasShooted) return;
 
         GetInputs();
 
@@ -72,6 +73,7 @@ public class CannonController : MonoBehaviour {
 
     public void Shoot(int angle, int force)
     {
+        HasShooted = true;
         StartCoroutine(IEShoot(angle, force));
     }
 
@@ -104,6 +106,7 @@ public class CannonController : MonoBehaviour {
         smokeParticles.Play();
         Rigidbody bullet = Instantiate(cannonBallPrefab, muzzle.position, muzzle.rotation);
         bullet.AddForce(muzzle.forward * force, ForceMode.Impulse);
+        yield return new WaitForEndOfFrame();
     }
 
     private void PlaySound(AudioClip clip)

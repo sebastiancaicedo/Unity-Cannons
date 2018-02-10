@@ -98,10 +98,12 @@ public class GameManager : MonoBehaviour {
     {
         if(actualPlayerTurn == PlayerTurn.Player1)
         {
+            player1.HasShooted = false;
             SetTurnTo(PlayerTurn.Player2);
         }
         else
         {
+            player2.HasShooted = false;
             SetTurnTo(PlayerTurn.Player1);
         }
     }
