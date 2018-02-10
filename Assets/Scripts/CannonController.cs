@@ -24,7 +24,7 @@ public class CannonController : MonoBehaviour {
     ParticleSystem smokeParticles;
     Vector2 tInputs = Vector2.zero;
     //int rInput = 0;
-    int axisMultiplier;
+    int yRotationFixValue;
     //bool fire;
 
     private void Awake()
@@ -36,7 +36,7 @@ public class CannonController : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
-        axisMultiplier = transform.localEulerAngles.y == 0 ? 1 : -1;
+        yRotationFixValue = transform.localEulerAngles.y == 0 ? 1 : -1;
 	}
 	
 	// Update is called once per frame
@@ -46,7 +46,7 @@ public class CannonController : MonoBehaviour {
 
         GetInputs();
 
-        transform.Translate(tInputs.x * axisMultiplier * traslationSpeed * Time.deltaTime, tInputs.y * traslationSpeed * Time.deltaTime, 0);
+        transform.Translate(tInputs.x * yRotationFixValue * traslationSpeed * Time.deltaTime, tInputs.y * traslationSpeed * Time.deltaTime, 0);
 
         //pivote.Rotate(0, 0, rInput * rotationSpeed * Time.deltaTime);
 
@@ -77,6 +77,14 @@ public class CannonController : MonoBehaviour {
 
     private IEnumerator IEShoot(int angle, int force)
     {
+        //Manejo de camara
+        if (GameManager.Instance.UseDynamicCamera)
+        {
+            GameManager.Instance.Camera.SetShootPosition();
+            yield return new WaitUntil(() => GameManager.Instance.Camera.IsCameraReady);
+        }
+
+        //Rotacion
         audioSource.loop = true;
         PlaySound(aimSound);
         do
@@ -91,6 +99,7 @@ public class CannonController : MonoBehaviour {
         audioSource.loop = false;
         yield return new WaitForSeconds(0.3f);
 
+        //Disparo
         PlaySound(shootSound);
         smokeParticles.Play();
         Rigidbody bullet = Instantiate(cannonBallPrefab, muzzle.position, muzzle.rotation);

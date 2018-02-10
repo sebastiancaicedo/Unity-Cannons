@@ -12,12 +12,18 @@ public class GameManager : MonoBehaviour {
 
     public static GameManager Instance { get; private set; }
 
-    public float limitTimeForTurn = 5;
+    [SerializeField]
+    float limitTimeForTurn = 5;
+    [SerializeField]
+    bool useDynamicCamera = true;
 
     CannonController player1;
     CannonController player2;
-
     PlayerTurn actualPlayerTurn;
+
+    public CameraController Camera { get; private set; }
+    public float LimitTimeForTurn { get { return limitTimeForTurn; } }
+    public bool UseDynamicCamera { get { return useDynamicCamera; } }
 
     private void Awake()
     {
@@ -26,6 +32,7 @@ public class GameManager : MonoBehaviour {
             Instance = this;
             player1 = GameObject.FindGameObjectWithTag("Player 1").GetComponent<CannonController>();
             player2 = GameObject.FindGameObjectWithTag("Player 2").GetComponent<CannonController>();
+            Camera = FindObjectOfType<CameraController>();
         }
         else
         {
@@ -42,6 +49,8 @@ public class GameManager : MonoBehaviour {
     {
         actualPlayerTurn = playerTurn;
         GameUIManager.Instance.SetPlayerTurnText(playerTurn);
+
+        if (UseDynamicCamera) Camera.MoveTowardsPlayer(actualPlayerTurn == PlayerTurn.Player1 ? player1.transform : player2.transform);
     }
 
     public void OnShootButtonClick()

@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class CannonBall : MonoBehaviour {
 
-    [SerializeField]
-    bool useParticles = true;
     public float damage;
 
     ParticleSystem particles;
@@ -18,9 +16,9 @@ public class CannonBall : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
-        if (useParticles) particles.Play();
+        particles.Play();
 
-        Destroy(gameObject, GameManager.Instance.limitTimeForTurn);
+        Destroy(gameObject, GameManager.Instance.LimitTimeForTurn);
 	}
 
     private void OnDestroy()
