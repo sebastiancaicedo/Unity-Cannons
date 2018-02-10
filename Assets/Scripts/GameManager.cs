@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour {
 
     public static GameManager Instance { get; private set; }
 
+    public float limitTimeForTurn = 5;
+
     CannonController player1;
     CannonController player2;
 
@@ -23,7 +25,7 @@ public class GameManager : MonoBehaviour {
         {
             Instance = this;
             player1 = GameObject.FindGameObjectWithTag("Player 1").GetComponent<CannonController>();
-            //player2 = GameObject.FindGameObjectWithTag("Player 2").GetComponent<CannonController>();
+            player2 = GameObject.FindGameObjectWithTag("Player 2").GetComponent<CannonController>();
         }
         else
         {
@@ -33,9 +35,13 @@ public class GameManager : MonoBehaviour {
 
     private void Start()
     {
-        actualPlayerTurn = (PlayerTurn)Random.Range(1, 3);
-        actualPlayerTurn = PlayerTurn.Player1;
-        GameUIManager.Instance.SetPlayerTurnText(actualPlayerTurn);
+        SetTurnTo((PlayerTurn)Random.Range(1, 3));
+    }
+
+    private void SetTurnTo(PlayerTurn playerTurn)
+    {
+        actualPlayerTurn = playerTurn;
+        GameUIManager.Instance.SetPlayerTurnText(playerTurn);
     }
 
     public void OnShootButtonClick()
@@ -55,6 +61,7 @@ public class GameManager : MonoBehaviour {
             {
                 player2.Shoot(angle, force);
             }
+            GameUIManager.Instance.HidePlayerMenu(actualPlayerTurn);
         }
         else
         {
@@ -75,6 +82,18 @@ public class GameManager : MonoBehaviour {
         else
         {
             return false;
+        }
+    }
+
+    public void EndOfThisTurn()
+    {
+        if(actualPlayerTurn == PlayerTurn.Player1)
+        {
+            SetTurnTo(PlayerTurn.Player2);
+        }
+        else
+        {
+            SetTurnTo(PlayerTurn.Player1);
         }
     }
 }

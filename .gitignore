@@ -1,0 +1,10 @@
+/Temp/
+
+/.vs/
+
+/obj/
+
+*.sln
+
+*.csproj
+

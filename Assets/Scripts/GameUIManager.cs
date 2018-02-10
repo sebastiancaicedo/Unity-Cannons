@@ -61,5 +61,21 @@ public class GameUIManager : MonoBehaviour {
 
     }
 
+    public void HidePlayerMenu(PlayerTurn playerTurn)
+    {
+        if(playerTurn == PlayerTurn.Player1)
+        {
+            player1InputAngle.text = string.Empty;
+            player1InputForce.text = string.Empty;
+            player1Menu.SetActive(false);
+        }
+        else
+        {
+            player2InputAngle.text = string.Empty;
+            player2InputForce.text = string.Empty;
+            player2Menu.SetActive(false);
+        }
+    }
+
 
 }

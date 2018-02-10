@@ -4,16 +4,27 @@ using UnityEngine;
 
 public class CannonBall : MonoBehaviour {
 
+    [SerializeField]
+    bool useParticles = true;
     public float damage;
 
-	// Use this for initialization
-	void Start () {
+    ParticleSystem particles;
 
-        Destroy(gameObject, 3);
+    private void Awake()
+    {
+        particles = GetComponent<ParticleSystem>();
+    }
+
+    // Use this for initialization
+    void Start () {
+
+        if (useParticles) particles.Play();
+
+        Destroy(gameObject, GameManager.Instance.limitTimeForTurn);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    private void OnDestroy()
+    {
+        GameManager.Instance.EndOfThisTurn();
+    }
 }
