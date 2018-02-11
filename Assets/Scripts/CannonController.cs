@@ -89,9 +89,10 @@ public class CannonController : MonoBehaviour {
         //Rotacion
         audioSource.loop = true;
         PlaySound(aimSound);
+        angle = angle % 360;
         do
         {
-            pivote.localEulerAngles = Vector3.Lerp(pivote.localEulerAngles, new Vector3(0, 0, angle), 1.2f *Time.deltaTime);
+            pivote.localEulerAngles = Vector3.Lerp(pivote.localEulerAngles, new Vector3(0, 0, angle), 1.2f * Time.deltaTime);
             yield return null;
 
         } while (Mathf.Abs(Mathf.Abs(angle) - Mathf.Abs(pivote.localEulerAngles.z)) > 1);

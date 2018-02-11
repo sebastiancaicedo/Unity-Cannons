@@ -17,18 +17,9 @@ public class GameUIManager : MonoBehaviour {
     InputField inputfieldAngle;
     [SerializeField]
     InputField inputfieldForce;
-    //[SerializeField]
-    //GameObject player2Menu;
-    //[SerializeField]
-    //InputField player2InputAngle;
-    //[SerializeField]
-    //InputField player2InputForce;
 
     public string AngleInput { get { return inputfieldAngle.text; } }
     public string ForceInput { get { return inputfieldForce.text; } }
-
-    //public string Player2Angle { get { return player2InputAngle.text; } }
-    //public string Player2Force { get { return player2InputForce.text; } }
 
     private void Awake()
     {
@@ -58,17 +49,6 @@ public class GameUIManager : MonoBehaviour {
         inputsMenu.anchorMax = new Vector2(xAnchor, 0);
         inputsMenu.anchorMin = new Vector2(xAnchor, 0);
         inputsMenu.anchoredPosition = new Vector2((inputsMenu.sizeDelta.x / 2) * sign, 0);
-        //if (playerTurn == PlayerTurn.Player1)
-        //{
-        //    player2Menu.SetActive(false);
-        //    inputsMenu.SetActive(true);
-        //}
-        //else
-        //{
-        //    inputsMenu.SetActive(false);
-        //    player2Menu.SetActive(true);
-        //}
-
     }
 
     public void HideInputsMenu()
@@ -76,6 +56,15 @@ public class GameUIManager : MonoBehaviour {
         inputfieldAngle.text = string.Empty;
         inputfieldForce.text = string.Empty;
         inputsMenu.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Valida que la fuerza no sea negativa
+    /// </summary>
+    public void ValidateForceInput()
+    {
+        if (inputfieldForce.text.Contains("-"))
+            inputfieldForce.text = string.Empty;
     }
 
 
