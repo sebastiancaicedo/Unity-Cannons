@@ -57,8 +57,8 @@ public class GameManager : MonoBehaviour {
     {
         int angle;
         int force;
-        string strAngle = actualPlayerTurn == PlayerTurn.Player1 ? GameUIManager.Instance.Player1Angle : GameUIManager.Instance.Player2Angle;
-        string strForce = actualPlayerTurn == PlayerTurn.Player1 ? GameUIManager.Instance.Player1Force : GameUIManager.Instance.Player2Force;
+        string strAngle = GameUIManager.Instance.AngleInput;
+        string strForce = GameUIManager.Instance.ForceInput;
 
         if (int.TryParse(strAngle, out angle) && int.TryParse(strForce, out force))
         {
@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour {
             {
                 player2.Shoot(angle, force);
             }
-            GameUIManager.Instance.HidePlayerMenu(actualPlayerTurn);
+            GameUIManager.Instance.HideInputsMenu();
         }
         else
         {
