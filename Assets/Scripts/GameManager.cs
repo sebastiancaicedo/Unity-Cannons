@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameMode
+{
+    Free,
+    ByTurn
+}
+
 public enum PlayerTurn
 {
     Player1 = 1,
@@ -12,6 +18,8 @@ public class GameManager : MonoBehaviour {
 
     public static GameManager Instance { get; private set; }
 
+    [SerializeField]
+    GameMode gameMode;
     [SerializeField]
     float limitTimeForTurn = 5;
     [SerializeField]
@@ -24,6 +32,8 @@ public class GameManager : MonoBehaviour {
     public CameraController Camera { get; private set; }
     public float LimitTimeForTurn { get { return limitTimeForTurn; } }
     public bool UseDynamicCamera { get { return useDynamicCamera; } }
+    public GameMode GameMode { get { return gameMode; } }
+    public bool GameFinished { get; private set; }
 
     private void Awake()
     {
@@ -42,7 +52,17 @@ public class GameManager : MonoBehaviour {
 
     private void Start()
     {
-        SetTurnTo((PlayerTurn)Random.Range(1, 3));
+        GameFinished = false;
+        if (gameMode == GameMode.Free)
+        {
+            useDynamicCamera = false;
+        }
+        else
+            if(gameMode == GameMode.ByTurn)
+        {
+            SetTurnTo((PlayerTurn)Random.Range(1, 3));
+        }
+
     }
 
     private void SetTurnTo(PlayerTurn playerTurn)
@@ -80,6 +100,10 @@ public class GameManager : MonoBehaviour {
 
     public bool IsTurnOf(CannonController cannon)
     {
+        if (GameFinished) return false;
+
+        if (GameMode == GameMode.Free) return true;
+
         if (player1 == cannon && actualPlayerTurn == PlayerTurn.Player1)
         {
             return true;
@@ -96,6 +120,8 @@ public class GameManager : MonoBehaviour {
 
     public void EndOfThisTurn()
     {
+        if (GameFinished) return;
+
         if(actualPlayerTurn == PlayerTurn.Player1)
         {
             player1.HasShooted = false;
@@ -106,5 +132,12 @@ public class GameManager : MonoBehaviour {
             player2.HasShooted = false;
             SetTurnTo(PlayerTurn.Player1);
         }
+    }
+
+    public void FinishGameImDead(CannonController deadController)
+    {
+        GameFinished = true;
+        PlayerTurn playerWinner = deadController == player1 ? PlayerTurn.Player2 : PlayerTurn.Player1;
+        GameUIManager.Instance.ShowGameFinishedMenus(playerWinner);
     }
 }

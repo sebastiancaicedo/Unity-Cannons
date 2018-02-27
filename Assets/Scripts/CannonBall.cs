@@ -5,18 +5,30 @@ using UnityEngine;
 public class CannonBall : MonoBehaviour {
 
     public float damage;
+    [SerializeField]
+    AudioClip explotionSound;
 
     ParticleSystem particles;
     ParticleSystem explodeParticles;
 
     AudioSource audioSource;
+    Rigidbody _rigidbody;
+    Collider _collider;
+    Renderer _renderer;
+
+    public Rigidbody _Rigidbody { get { return _rigidbody; } }
+    public Collider _Collider { get { return _collider; } }
+    public Renderer _Renderer { get { return _renderer; } }
 
     private void Awake()
     {
+        _rigidbody = GetComponent<Rigidbody>();
+        _collider = GetComponent<Collider>();
+        _renderer = GetComponent<Renderer>();
         particles = GetComponent<ParticleSystem>();
         explodeParticles = transform.GetChild(0).GetComponent<ParticleSystem>();
         explodeParticles.gameObject.SetActive(false);
-        audioSource = explodeParticles.GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Use this for initialization
@@ -28,7 +40,8 @@ public class CannonBall : MonoBehaviour {
 
     private void OnDestroy()
     {
-        GameManager.Instance.EndOfThisTurn();
+        if (GameManager.Instance.GameMode == GameMode.ByTurn)
+            GameManager.Instance.EndOfThisTurn();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -36,7 +49,11 @@ public class CannonBall : MonoBehaviour {
         string colTag = collision.transform.root.tag;
         if (colTag == "Player 1" || colTag == "Player 2")
         {
-            print(collision.transform.root.name);
+            Health playerHealth = collision.transform.root.GetComponent<Health>();
+            if(playerHealth != null)
+            {
+                playerHealth.TakeDamage(damage);
+            }
             StartCoroutine(IEExplode());
         }
     }
@@ -45,14 +62,20 @@ public class CannonBall : MonoBehaviour {
     {
         explodeParticles.gameObject.SetActive(true);
         explodeParticles.transform.SetParent(null);
-        Destroy(explodeParticles.gameObject, 5);
-        audioSource.Play();
+        Destroy(explodeParticles.gameObject, 4);
+        PlaySound(explotionSound);
         explodeParticles.Play();
         yield return new WaitForEndOfFrame();
         particles.Stop();
-        GetComponent<Renderer>().enabled = false;
+        _Renderer.enabled = false;
+        _Collider.enabled = false;
         yield return new WaitForSeconds(2);
         Destroy(gameObject);
 
+    }
+
+    public void PlaySound(AudioClip audioClip)
+    {
+        audioSource.PlayOneShot(audioClip);
     }
 }

@@ -17,6 +17,10 @@ public class GameUIManager : MonoBehaviour {
     InputField inputfieldAngle;
     [SerializeField]
     InputField inputfieldForce;
+    [SerializeField]
+    GameObject gameFinishedMenu;
+    [SerializeField]
+    Text winnerText;
 
     public string AngleInput { get { return inputfieldAngle.text; } }
     public string ForceInput { get { return inputfieldForce.text; } }
@@ -30,6 +34,16 @@ public class GameUIManager : MonoBehaviour {
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        gameFinishedMenu.SetActive(false);
+        if(GameManager.Instance.GameMode == GameMode.Free)
+        {
+            playerTurnText.gameObject.SetActive(false);
+            HideInputsMenu();
         }
     }
 
@@ -65,6 +79,17 @@ public class GameUIManager : MonoBehaviour {
     {
         if (inputfieldForce.text.Contains("-"))
             inputfieldForce.text = string.Empty;
+    }
+
+    public void ShowGameFinishedMenus(PlayerTurn winner)
+    {
+        winnerText.text = string.Format("Player {0} has won", (int)winner);
+        gameFinishedMenu.SetActive(true);
+    }
+
+    public void OnRetryButtonClick()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
     }
 
 
